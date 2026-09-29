@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+
+  <title>Nuestra Boda — Sofia & Alexander | 27.11.2027</title>
+  <meta name="description"
+    content="Queremos que nos acompañes en este día tan especial para nosotros. Boda de Sofia y Alexander en Establecimiento La Angélica el 27 de Noviembre de 2027.">
+  <meta name="theme-color" content="#FDFBF7">
+
+  <!-- Open Graph / WhatsApp Preview Tags -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Boda de Sofia & Alexander 💍">
+  <meta property="og:description"
+    content="¡Nos casamos! Toca para abrir nuestra invitación interactiva. 27 de Noviembre de 2027 en Establecimiento La Angélica.">
+  <meta property="og:image" content="assets/images/couple-1.jpg">
+  <meta property="twitter:card" content="summary_large_image">
+
+  <!-- Favicon Monograma -->
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💍</text></svg>">
+
+  <!-- Google Fonts: Cormorant Garamond, Great Vibes, Montserrat -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Great+Vibes&family=Montserrat:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Estilos CSS -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+  <!-- Canvas animado de pétalos y destellos de fondo -->
+  <canvas id="petals-canvas" aria-hidden="true"></canvas>
+
+  <!-- ==========================================================================
+       PANTALLA DE SOBRE INTERACTIVO (ENVELOPE OVERLAY)
+       ========================================================================== -->
+  <section id="envelope-overlay" class="envelope-overlay" aria-label="Apertura del sobre de invitación">
+    <div class="envelope-intro-text">
+      <p class="pre-title">Invitación Exclusiva de Boda</p>
+      <h2 class="couple-initials">S & A</h2>
+    </div>
+
+    <!-- Contenedor 3D del sobre -->
+    <div class="envelope-wrapper" id="envelope-wrapper" title="Toca para abrir la invitación">
+      <div class="envelope" id="envelope">
+        <!-- Interior con tarjeta que asoma -->
+        <div class="envelope-inner"></div>
+
+        <div class="envelope-letter" id="envelope-letter">
+          <div class="letter-monogram">S&A</div>
+          <div class="letter-title">Nuestra Boda</div>
+          <div class="letter-date">27 • NOVIEMBRE • 2027</div>
+        </div>
+
+        <!-- Solapas triangulares -->
+        <div class="envelope-flap-left"></div>
+        <div class="envelope-flap-right"></div>
+        <div class="envelope-flap-bottom"></div>
+        <div class="envelope-flap-top" id="envelope-flap-top"></div>
+
+        <!-- Sello de Lacre con Iniciales S&A -->
+        <div class="wax-seal" id="wax-seal" role="button" tabindex="0" aria-label="Abrir invitación de boda">
+          <div class="wax-seal-pulse"></div>
+          <span class="wax-seal-text">S&A</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="envelope-cta">
+      <svg viewBox="0 0 24 24">
+        <path
+          d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+      </svg>
+      <span>Toca el sello para abrir</span>
+    </div>
+  </section>
+
+  <!-- ==========================================================================
+       BARRA DE CONTROL FLOTANTE (MÚSICA Y CONFIRMACIÓN RÁPIDA)
+       ========================================================================== -->
+  <nav class="floating-nav" id="floating-nav" aria-label="Controles de navegación">
+    <button class="music-toggle-btn" id="music-toggle-btn" aria-label="Reproducir o pausar música de fondo">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+        <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
+      </svg>
+    </button>
+    <span class="music-label" id="music-label">Música</span>
+    <a href="#pago-tarjeta" class="quick-nav-pill">Tarjeta</a>
+    <a href="#regalo-boda" class="quick-nav-pill">Regalo</a>
+    <a href="#rsvp-section" class="quick-rsvp-btn" id="nav-rsvp-btn">Confirmar</a>
+  </nav>
+
+  <!-- ==========================================================================
+       CONTENIDO PRINCIPAL DE LA INVITACIÓN DESPLEGADA
+       ========================================================================== -->
+  <main class="invitation-main" id="invitation-main">
+    <div class="invitation-card-border">
+
+      <!-- Encabezado / Hero -->
+      <header class="hero-header">
+        <div class="monogram-badge">
+          <span class="monogram-text">S & A</span>
+        </div>
+        <p class="wedding-subtitle">¡Nos Casamos!</p>
+        <h1 class="couple-names">
+          Sofia <span class="ampersand">&</span> Alexander
+        </h1>
+        <div class="wedding-date-highlight">
+          Sábado • 27 de Noviembre de 2027
+        </div>
+
+        <!-- Fotografía destacada de la pareja -->
+        <div class="couple-hero-image-wrap">
+          <img src="assets/images/couple-1.jpg" alt="Sofia y Alexander en Establecimiento La Angélica"
+            class="couple-hero-image" id="hero-img">
+        </div>
+
+        <!-- Frase emotiva solicitada -->
+        <div class="emotional-quote-box">
+          <span class="quote-mark">“</span>
+          <p class="emotional-quote-text">
+            Hay momentos en la vida que son inolvidables, y compartirlos con las personas que más queremos los hace
+            eternos.
+            <br>
+            <strong>¡Queremos que nos acompañes en este día tan especial para nosotros!</strong>
+          </p>
+        </div>
+      </header>
+
+      <!-- Cuenta Regresiva -->
+      <section class="countdown-section" aria-labelledby="countdown-heading">
+        <h2 id="countdown-heading" class="section-title">Faltan tan solo...</h2>
+        <div class="section-divider">
+          <span class="section-divider-icon">✦</span>
+        </div>
+
+        <div class="countdown-grid">
+          <div class="countdown-card">
+            <span class="countdown-number" id="days">00</span>
+            <span class="countdown-label">Días</span>
+          </div>
+          <div class="countdown-card">
+            <span class="countdown-number" id="hours">00</span>
+            <span class="countdown-label">Horas</span>
+          </div>
+          <div class="countdown-card">
+            <span class="countdown-number" id="minutes">00</span>
+            <span class="countdown-label">Min</span>
+          </div>
+          <div class="countdown-card">
+            <span class="countdown-number" id="seconds">00</span>
+            <span class="countdown-label">Seg</span>
+          </div>
+        </div>
+
+        <!-- Botones de Calendario -->
+        <div class="calendar-actions">
+          <a href="#" id="btn-google-cal" class="btn-secondary" title="Agregar evento a Google Calendar">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z" />
+            </svg>
+            Agendar en Google Calendar
+          </a>
+          <button id="btn-ics-cal" class="btn-secondary" title="Descargar archivo para Apple y Outlook">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z" />
+            </svg>
+            Descargar (.ics)
+          </button>
+        </div>
+      </section>
+
+      <!-- Ceremonia y Celebración -->
+      <section class="event-details-grid" aria-label="Detalles de la ceremonia y fiesta">
+        <!-- Ceremonia -->
+        <article class="detail-card">
+          <div class="card-icon-wrap">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+            </svg>
+          </div>
+          <h3 class="detail-card-title">Ceremonia Civil & Votos</h3>
+          <span class="detail-card-time">18:00 HS</span>
+          <p class="detail-card-desc">
+            En los jardines de <strong>Establecimiento La Angélica</strong>. Te esperamos puntual.
+          </p>
+        </article>
+
+        <!-- Fiesta -->
+        <article class="detail-card">
+          <div class="card-icon-wrap">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M11 2v20c-5.07-.5-9-4.79-9-10s3.93-9.5 9-10zm2 0v20c5.07-.5 9-4.79 9-10s-3.93-9.5-9-10zm-6.5 7a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm11 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" />
+            </svg>
+          </div>
+          <h3 class="detail-card-title">Finalizacion</h3>
+          <span class="detail-card-time">02:00 HS</span>
+          <p class="detail-card-desc">
+            Celebremos Juntos!
+        </article>
+      </section>
+
+      <!-- Ubicación: Establecimiento La Angélica -->
+      <section class="location-section" aria-labelledby="location-heading">
+        <h2 id="location-heading" class="section-title">Ubicación</h2>
+        <div class="section-divider"><span class="section-divider-icon">✦</span></div>
+
+        <div class="location-card">
+          <div class="location-banner">
+            <h3 class="location-venue-name">Establecimiento La Angélica</h3>
+            <p class="location-venue-tag">Espacio Exclusivo de Eventos</p>
+          </div>
+          <div class="location-body">
+            <p class="location-address">
+              Un entorno natural de ensueño para celebrar nuestro casamiento rodeados de naturaleza.
+            </p>
+            <div class="location-buttons">
+              <a href="https://maps.app.goo.gl/MxfvpKQpEJUZecMeA" target="_blank" rel="noopener noreferrer"
+                class="btn-primary" id="btn-open-maps">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+                </svg>
+                Abrir en Google Maps
+              </a>
+              <a href="https://waze.com/ul?q=Establecimiento+La+Angelica" target="_blank" rel="noopener noreferrer"
+                class="btn-secondary" id="btn-open-waze">
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.85 7h10.29l1.08 3.11H5.77L6.85 7zM19 17H5v-4.66l.12-.34h13.77l.11.34V17z" />
+                </svg>
+                Abrir en Waze
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Dress Code -->
+      <section class="dresscode-section" aria-labelledby="dresscode-heading">
+        <h2 id="dresscode-heading" class="section-title">Código de Vestimenta</h2>
+        <div class="section-divider"><span class="section-divider-icon">✦</span></div>
+
+        <div class="dresscode-card">
+          <div class="dresscode-badge">Elegante Sport</div>
+          <p style="color: var(--color-text-muted); margin-bottom: 10px;">
+            Queremos que te sientas cómodo/a y radiante para festejar toda la noche con nosotros.
+          </p>
+          <div class="color-palette-wrap" title="Paleta sugerida de tonos elegantes">
+
+          </div>
+          <p class="palette-note">
+            * Se reserva el color blanco y marfil total para la novia 🤍
+            <br>
+            * El evento se celebra en parte en jardines: recomendamos calzado cómodo o tacos anchos.
+          </p>
+        </div>
+      </section>
+
+      <!-- ==========================================================================
+           SECCIÓN 1: PAGO DE LA TARJETA DE LA BODA
+           ========================================================================== -->
+      <section class="tarjeta-section" id="pago-tarjeta" aria-labelledby="tarjeta-heading">
+        <h2 id="tarjeta-heading" class="section-title">Tarjeta de la Boda</h2>
+        <div class="section-divider"><span class="section-divider-icon">✦</span></div>
+
+        <div class="payment-card tarjeta-card">
+          <div class="payment-card-badge">Pase / Entrada a la Fiesta</div>
+          <p class="payment-card-desc">
+            Para acompañarnos en la celebración y asegurar tu lugar en este día inolvidable, te compartimos los datos
+            para abonar la tarjeta de la boda:
+          </p>
+
+          <div class="tarjeta-cost-box">
+            <span class="cost-label">Valor de la tarjeta:</span>
+            <div class="cost-row">
+              <span class="cost-amount">$90.000 <small>/ por persona</small></span>
+              <span class="cost-amount">$45.000 <small>/ de 3 a 12 años</small></span>
+            </div>
+            <p class="cost-note">Fecha límite para abonar la tarjeta: <strong>1 de Noviembre de 2027</strong></p>
+          </div>
+
+          <div class="bank-info-box">
+            <div class="bank-row">
+              <span class="bank-label">Banco:</span>
+              <span class="bank-value">Mercado Pago</span>
+            </div>
+            <div class="bank-row">
+              <span class="bank-label">Titular:</span>
+              <span class="bank-value">Alexander Gabriel Borda</span>
+            </div>
+            <div class="bank-row">
+              <span class="bank-label">CBU:</span>
+              <div class="bank-value-wrap">
+                <span class="bank-value">0000003100011998712093</span>
+                <button class="btn-copy" data-copy="0000003100011998712093" aria-label="Copiar número de CBU">Copiar
+                  CBU</button>
+              </div>
+            </div>
+            <div class="bank-row highlight-alias-row">
+              <span class="bank-label">Alias para Pagar Tarjeta:</span>
+              <div class="bank-value-wrap">
+                <span class="bank-value alias-highlight">boda.sya.mp</span>
+                <button class="btn-copy btn-copy-gold" data-copy="boda.sya.mp"
+                  aria-label="Copiar Alias de Tarjeta">Copiar Alias</button>
+              </div>
+            </div>
+          </div>
+
+          <a href="https://api.whatsapp.com/send?phone=5493454048992&text=%F0%9F%93%A9%20*COMPROBANTE%20DE%20PAGO%20-%20TARJETA%20DE%20BODA*%0A%0A%C2%A1Hola%20Sofia%20y%20Alexander!%20Les%20adjunto%20el%20comprobante%20de%20pago%20de%20nuestra(s)%20tarjeta(s):%0A%0A%F0%9F%91%A4%20*Nombre:*%20%0A%F0%9F%92%B5%20*Monto:*%20%0A%F0%9F%93%85%20*Fecha:*%20"
+            target="_blank" rel="noopener noreferrer" class="btn-send-receipt">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+              <path
+                d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm.01 1.67c2.2 0 4.26.86 5.82 2.42 1.56 1.56 2.41 3.63 2.41 5.83s-.85 4.27-2.41 5.83c-1.56 1.56-3.62 2.42-5.82 2.42-1.46 0-2.9-.38-4.17-1.11l-.3-.17-3.1 0.81.83-3.02-.2-.31c-.8-1.28-1.22-2.77-1.22-4.45 0-2.2.86-4.27 2.42-5.83 1.56-1.56 3.63-2.42 5.83-2.42zM8.35 6.94c-.16 0-.34.01-.5.06-.2.07-.42.21-.55.42-.48.74-.48 2.05.29 3.42 1.05 1.86 2.65 3.32 4.44 4.09 1.15.5 2.15.42 2.85-.09.33-.24.58-.6.67-.93.08-.31.02-.63-.09-.72l-1.89-.91c-.18-.09-.39-.08-.55.03l-.74.62c-.13.11-.31.14-.47.07-.63-.28-1.63-1.07-2.22-1.99-.11-.18-.1-.4.03-.54l.58-.61c.14-.15.2-.36.14-.56L10.3 7.37c-.11-.29-.44-.43-.75-.43h-.2-.2-.8z" />
+            </svg>
+            Enviar Comprobante por WhatsApp
+          </a>
+        </div>
+      </section>
+
+      <!-- ==========================================================================
+           SECCIÓN 2: REGALO DE BODAS & LUNA DE MIEL
+           ========================================================================== -->
+      <section class="gifts-section" id="regalo-boda" aria-labelledby="gifts-heading">
+        <h2 id="gifts-heading" class="section-title">Regalo de Bodas</h2>
+        <div class="section-divider"><span class="section-divider-icon">✦</span></div>
+
+        <div class="payment-card gift-card">
+          <div class="payment-card-badge gift-badge">Luna de Miel & Nuevos Comienzos</div>
+          <p class="payment-card-desc">
+            Tu presencia en nuestro gran día es el mejor regalo que podemos recibir.
+            <br>
+            Sin embargo, si además deseas hacernos un presente o colaborar con nuestra <strong>Luna de Miel</strong>,
+            ponemos a tu disposición nuestra cuenta exclusiva para regalos:
+          </p>
+
+          <div class="bank-info-box">
+            <div class="bank-row">
+              <span class="bank-label">Banco:</span>
+              <span class="bank-value">Banco Galicia</span>
+            </div>
+            <div class="bank-row">
+              <span class="bank-label">Titulares:</span>
+              <span class="bank-value">Sofia & Alexander</span>
+            </div>
+            <div class="bank-row">
+              <span class="bank-label">CBU:</span>
+              <div class="bank-value-wrap">
+                <span class="bank-value">0070182933000049182371</span>
+                <button class="btn-copy" data-copy="0070182933000049182371" aria-label="Copiar número de CBU">Copiar
+                  CBU</button>
+              </div>
+            </div>
+            <div class="bank-row highlight-alias-row">
+              <span class="bank-label">Alias para Regalo:</span>
+              <div class="bank-value-wrap">
+                <span class="bank-value alias-highlight">REGALO.SOFIA.ALEX</span>
+                <button class="btn-copy btn-copy-gold" data-copy="REGALO.SOFIA.ALEX"
+                  aria-label="Copiar Alias de Regalo">Copiar Alias</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================================================
+           CONFIRMACIÓN DE ASISTENCIA (RSVP) & TABLA ORDENADA DE INVITADOS
+           ========================================================================== -->
+      <section class="rsvp-section" id="rsvp-section" aria-labelledby="rsvp-heading">
+        <h2 id="rsvp-heading" class="section-title">Confirmar Asistencia</h2>
+        <div class="section-divider"><span class="section-divider-icon">✦</span></div>
+
+        <div class="rsvp-container">
+          <p class="rsvp-instruction-highlight">
+            Confirmar asistencia con nombres y apellidos de todos los que confirman, cuántos niños son e indicarnos
+            edad, alergia o dieta especial.
+          </p>
+          <p class="rsvp-deadline">
+            Por favor, confírmanos tu presencia antes del <strong>1 de Noviembre de 2027</strong>.
+          </p>
+
+          <form id="rsvp-form" class="rsvp-form">
+            <div class="form-group">
+              <label for="guest-name" class="form-label">Nombres y Apellidos de todos los que confirman *</label>
+              <textarea id="guest-name" class="form-textarea" rows="2" placeholder="Ej: Juan Pérez y Laura Gómez"
+                required></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">¿Podrán acompañarnos? *</label>
+              <div class="radio-group">
+                <label class="radio-label">
+                  <input type="radio" name="attendance" value="si" checked>
+                  <span>¡Sí, confirmamos con alegría! 🎉</span>
+                </label>
+                <label class="radio-label">
+                  <input type="radio" name="attendance" value="no">
+                  <span>Lamentablemente no podremos 😢</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group" id="group-guest-count">
+              <label for="guest-count" class="form-label">Cantidad de adultos</label>
+              <select id="guest-count" class="form-select">
+                <option value="1">1 adulto</option>
+                <option value="2" selected>2 adultos</option>
+                <option value="3">3 adultos</option>
+                <option value="4">4 adultos</option>
+                <option value="5">5 adultos</option>
+                <option value="6">6 adultos</option>
+              </select>
+            </div>
+
+            <div class="form-group" id="group-kids-info">
+              <label for="kids-info" class="form-label">¿Cuántos niños son e indicar edad?</label>
+              <input type="text" id="kids-info" class="form-input" placeholder="Ej: 2 niños (4 y 7 años) o 'Ninguno'">
+            </div>
+
+            <div class="form-group" id="group-dietary-menu">
+              <label for="dietary-menu" class="form-label">Alergia o dieta especial</label>
+              <input type="text" id="dietary-menu" class="form-input"
+                placeholder="Ej: Celíaco (Sin TACC), vegetariano, alergia a frutos secos, o 'Ninguna'">
+            </div>
+
+            <button type="submit" class="btn-whatsapp-rsvp" id="btn-submit-rsvp">
+              <svg viewBox="0 0 24 24">
+                <path
+                  d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2zm.01 1.67c2.2 0 4.26.86 5.82 2.42 1.56 1.56 2.41 3.63 2.41 5.83s-.85 4.27-2.41 5.83c-1.56 1.56-3.62 2.42-5.82 2.42-1.46 0-2.9-.38-4.17-1.11l-.3-.17-3.1 0.81.83-3.02-.2-.31c-.8-1.28-1.22-2.77-1.22-4.45 0-2.2.86-4.27 2.42-5.83 1.56-1.56 3.63-2.42 5.83-2.42zM8.35 6.94c-.16 0-.34.01-.5.06-.2.07-.42.21-.55.42-.48.74-.48 2.05.29 3.42 1.05 1.86 2.65 3.32 4.44 4.09 1.15.5 2.15.42 2.85-.09.33-.24.58-.6.67-.93.08-.31.02-.63-.09-.72l-1.89-.91c-.18-.09-.39-.08-.55.03l-.74.62c-.13.11-.31.14-.47.07-.63-.28-1.63-1.07-2.22-1.99-.11-.18-.1-.4.03-.54l.58-.61c.14-.15.2-.36.14-.56L10.3 7.37c-.11-.29-.44-.43-.75-.43h-.2-.2-.8z" />
+              </svg>
+              Confirmar Asistencia por WhatsApp
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <!-- Footer romántico -->
+      <footer class="invitation-footer">
+        <p class="footer-script">Sofia & Alexander</p>
+        <p class="footer-date">27 • 11 • 2027</p>
+        <p style="font-size: 0.78rem; color: var(--color-text-muted); margin-top: 10px;">
+          Establecimiento La Angélica • Los esperamos!
+        </p>
+      </footer>
+
+    </div>
+  </main>
+
+  <!-- ==========================================================================
+       MODAL LIGHTBOX PARA VISUALIZACIÓN DE FOTOS
+       ========================================================================== -->
+  <div id="lightbox-modal" class="lightbox-modal" role="dialog" aria-modal="true" aria-label="Visualizador de fotos">
+    <div class="lightbox-content-wrap">
+      <button class="lightbox-close-btn" id="lightbox-close" aria-label="Cerrar foto">&times;</button>
+      <button class="lightbox-nav-btn lightbox-prev" id="lightbox-prev" aria-label="Foto anterior">&#10094;</button>
+
+      <img src="" alt="Foto de boda en alta resolución" id="lightbox-img" class="lightbox-img">
+      <p id="lightbox-caption"
+        style="color: #FFFFFF; margin-top: 14px; font-size: 0.9rem; text-align: center; font-family: var(--font-serif);">
+      </p>
+
+      <button class="lightbox-nav-btn lightbox-next" id="lightbox-next" aria-label="Siguiente foto">&#10095;</button>
+    </div>
+  </div>
+
+  <!-- Toast flotante de notificaciones -->
+  <div id="toast-notification" class="toast-notification" role="status" aria-live="polite"></div>
+
+  <!-- Script Principal -->
+  <script src="js/app.js"></script>
+</body>
+
+</html>

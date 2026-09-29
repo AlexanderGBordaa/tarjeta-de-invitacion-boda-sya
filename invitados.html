@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de Novios — Invitados Confirmados | Sofia & Alexander</title>
+  <meta name="robots" content="noindex, nofollow">
+
+  <!-- Favicon Monograma -->
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💍</text></svg>">
+
+  <!-- Google Fonts: Cormorant Garamond, Montserrat -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <link rel="stylesheet" href="css/styles.css">
+
+  <style>
+    body {
+      background-color: #F8F5EE;
+      color: #2C2825;
+      font-family: 'Montserrat', sans-serif;
+      padding: 30px 15px 80px 15px;
+    }
+
+    .admin-container {
+      max-width: 1050px;
+      margin: 0 auto;
+      background: #FFFFFF;
+      border-radius: 16px;
+      border: 1px solid #E8E2D7;
+      box-shadow: 0 15px 40px rgba(44, 40, 37, 0.08);
+      padding: 35px 25px;
+      position: relative;
+    }
+
+    .admin-header {
+      text-align: center;
+      margin-bottom: 30px;
+      position: relative;
+    }
+
+    .admin-monogram {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      color: #9A7736;
+      border: 1px solid #C5A059;
+      width: 65px;
+      height: 65px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+      background: #FCFAF6;
+    }
+
+    .admin-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.2rem;
+      color: #2C2825;
+      margin-bottom: 6px;
+    }
+
+    .admin-subtitle {
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #6E6862;
+    }
+
+    /* Tarjetas KPI de resumen */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .kpi-card {
+      background: #FCFAF6;
+      border: 1px solid #E8E2D7;
+      border-radius: 12px;
+      padding: 18px 16px;
+      text-align: center;
+      transition: transform 0.2s ease;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      border-color: #C5A059;
+    }
+
+    .kpi-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: #9A7736;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .kpi-label {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #6E6862;
+      font-weight: 600;
+    }
+
+    /* Barra de herramientas y filtros */
+    .toolbar-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      margin-bottom: 25px;
+      padding: 18px;
+      background: #FAF7F0;
+      border-radius: 12px;
+      border: 1px solid #E8E2D7;
+    }
+
+    @media (min-width: 680px) {
+      .toolbar-wrap {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+
+    .toolbar-left {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .search-box {
+      padding: 10px 14px;
+      border: 1px solid #D8D2C6;
+      border-radius: 25px;
+      font-size: 0.88rem;
+      font-family: inherit;
+      width: 240px;
+      outline: none;
+      background: #FFFFFF;
+    }
+
+    .search-box:focus {
+      border-color: #C5A059;
+      box-shadow: 0 0 0 3px rgba(197, 160, 89, 0.15);
+    }
+
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: 25px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .btn-excel {
+      background: #2E7D32;
+      color: #FFFFFF;
+    }
+
+    .btn-excel:hover {
+      background: #256628;
+      transform: translateY(-2px);
+    }
+
+    .btn-manual-add {
+      background: #C5A059;
+      color: #FFFFFF;
+    }
+
+    .btn-manual-add:hover {
+      background: #9A7736;
+      transform: translateY(-2px);
+    }
+
+    .btn-view-card {
+      background: #FFFFFF;
+      border: 1px solid #C5A059;
+      color: #9A7736;
+    }
+
+    .btn-view-card:hover {
+      background: #C5A059;
+      color: #FFFFFF;
+    }
+
+    /* Tabla */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid #E8E2D7;
+      border-radius: 12px;
+      background: #FFFFFF;
+    }
+
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.88rem;
+      white-space: nowrap;
+    }
+
+    .admin-table th {
+      background: #F4EFE6;
+      padding: 14px 16px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #2C2825;
+      border-bottom: 2px solid #E8E2D7;
+    }
+
+    .admin-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #F0ECE4;
+      color: #2C2825;
+    }
+
+    .admin-table tr:hover td {
+      background: #FDFBF7;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-yes {
+      background: #EAF8EE;
+      color: #1EBE5D;
+    }
+
+    .status-no {
+      background: #FDEEEE;
+      color: #D32F2F;
+    }
+
+    .btn-delete-row {
+      background: none;
+      border: none;
+      color: #9E9E9E;
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 4px;
+      transition: color 0.2s ease;
+    }
+
+    .btn-delete-row:hover {
+      color: #D32F2F;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #6E6862;
+    }
+
+    /* Modal para agregar invitado manual */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .modal-backdrop.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-card {
+      background: #FFFFFF;
+      border-radius: 14px;
+      padding: 28px;
+      width: 100%;
+      max-width: 480px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.6rem;
+      margin-bottom: 18px;
+      color: #2C2825;
+    }
+
+    .modal-form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .modal-form-group label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: #2C2825;
+    }
+
+    .modal-form-group input,
+    .modal-form-group select {
+      padding: 10px 12px;
+      border: 1px solid #D8D2C6;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="admin-container">
+    <header class="admin-header">
+      <div class="admin-monogram">S & A</div>
+      <h1 class="admin-title">Panel de Invitados Confirmados</h1>
+      <p class="admin-subtitle">Boda de Sofia & Alexander • 27 de Noviembre de 2027</p>
+    </header>
+
+    <!-- Tarjetas KPI -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-number" id="kpi-total-adults">0</div>
+        <div class="kpi-label">Adultos Confirmados</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-number" id="kpi-total-kids">0</div>
+        <div class="kpi-label">Niños Estimados</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-number" id="kpi-total-responses">0</div>
+        <div class="kpi-label">Respuestas Totales</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-number" id="kpi-declined" style="color: #D32F2F;">0</div>
+        <div class="kpi-label">No Asisten</div>
+      </div>
+    </div>
+
+    <!-- Barra de acciones y filtros -->
+    <div class="toolbar-wrap">
+      <div class="toolbar-left">
+        <input type="text" id="admin-search-input" class="search-box" placeholder="🔍 Buscar por nombre o dieta...">
+        <button type="button" class="btn-action btn-manual-add" id="btn-open-modal">
+          ➕ Agregar Invitado
+        </button>
+      </div>
+      <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <button type="button" class="btn-action btn-excel" id="btn-admin-export">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+            <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
+          </svg>
+          Descargar Excel (.csv)
+        </button>
+        <a href="index.html" class="btn-action btn-view-card" target="_blank" title="Abrir invitación">
+          Ver Tarjeta
+        </a>
+      </div>
+    </div>
+
+    <!-- Tabla de invitados -->
+    <div class="table-container">
+      <table class="admin-table" id="admin-table">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Asistentes</th>
+            <th>Estado</th>
+            <th>Adultos</th>
+            <th>Niños / Edades</th>
+            <th>Dieta / Alergia</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody id="admin-tbody">
+          <!-- Llenado dinámico -->
+        </tbody>
+      </table>
+
+      <div class="empty-state" id="admin-empty-state" style="display: none;">
+        <p>No se encontraron registros de invitados.</p>
+        <small>Los invitados que confirmen en la tarjeta aparecerán automáticamente aquí.</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para Agregar Invitado Manualmente -->
+  <div class="modal-backdrop" id="modal-add-guest">
+    <div class="modal-card">
+      <h3 class="modal-title">Agregar Invitado Manual</h3>
+      <form id="form-manual-guest">
+        <div class="modal-form-group">
+          <label>Nombres y Apellidos *</label>
+          <input type="text" id="manual-name" required placeholder="Ej: Marcos Gómez y Andrea López">
+        </div>
+        <div class="modal-form-group">
+          <label>Asistencia</label>
+          <select id="manual-attendance">
+            <option value="si">Confirmado (Sí asiste)</option>
+            <option value="no">No podrá asistir</option>
+          </select>
+        </div>
+        <div class="modal-form-group">
+          <label>Cantidad de adultos</label>
+          <select id="manual-adults">
+            <option value="1">1 adulto</option>
+            <option value="2" selected>2 adultos</option>
+            <option value="3">3 adultos</option>
+            <option value="4">4 adultos</option>
+            <option value="5">5 adultos</option>
+            <option value="6">6 adultos</option>
+          </select>
+        </div>
+        <div class="modal-form-group">
+          <label>Niños y edades</label>
+          <input type="text" id="manual-kids" placeholder="Ej: 1 niño (6 años) o 'Ninguno'">
+        </div>
+        <div class="modal-form-group">
+          <label>Alergia o dieta especial</label>
+          <input type="text" id="manual-dietary" placeholder="Ej: Celíaco, vegetariano o 'Ninguna'">
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-action btn-view-card" id="btn-close-modal">Cancelar</button>
+          <button type="submit" class="btn-action btn-manual-add">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'wedding_confirmed_guests_sa_table_v2';
+    let guests = [];
+
+    function loadGuests() {
+      try {
+        const stored = localStorage.getItem(STORAGE_KEY);
+        if (stored) {
+          guests = JSON.parse(stored);
+        } else {
+          guests = [
+            {
+              id: 'sample-1',
+              date: '28/09/2026 19:30',
+              name: 'Mariana & Carlos Rossi',
+              attendance: 'si',
+              adults: '2',
+              kids: '1 niño (5 años)',
+              dietary: 'Celíaco (Sin TACC)'
+            }
+          ];
+          saveGuests();
+        }
+      } catch (e) {
+        console.warn('Error loading guests:', e);
+        guests = [];
+      }
+    }
+
+    function saveGuests() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(guests));
+      } catch (e) {
+        console.warn('Error saving guests:', e);
+      }
+    }
+
+    function updateKPIs() {
+      const attending = guests.filter(g => g.attendance === 'si');
+      const totalAdults = attending.reduce((acc, curr) => acc + parseInt(curr.adults || '1', 10), 0);
+      
+      // Contar niños estimados sumando números si aparecen
+      let totalKids = 0;
+      attending.forEach(g => {
+        if (g.kids && g.kids !== '-' && !g.kids.toLowerCase().includes('ningun')) {
+          const match = g.kids.match(/\d+/);
+          totalKids += match ? parseInt(match[0], 10) : 1;
+        }
+      });
+
+      const declined = guests.filter(g => g.attendance === 'no').length;
+
+      document.getElementById('kpi-total-adults').innerText = totalAdults;
+      document.getElementById('kpi-total-kids').innerText = totalKids;
+      document.getElementById('kpi-total-responses').innerText = guests.length;
+      document.getElementById('kpi-declined').innerText = declined;
+    }
+
+    function renderTable(query = '') {
+      const tbody = document.getElementById('admin-tbody');
+      const emptyState = document.getElementById('admin-empty-state');
+      const table = document.getElementById('admin-table');
+
+      updateKPIs();
+
+      const filtered = guests.filter(g => {
+        if (!query) return true;
+        const q = query.toLowerCase();
+        return (
+          (g.name && g.name.toLowerCase().includes(q)) ||
+          (g.kids && g.kids.toLowerCase().includes(q)) ||
+          (g.dietary && g.dietary.toLowerCase().includes(q))
+        );
+      });
+
+      tbody.innerHTML = '';
+
+      if (filtered.length === 0) {
+        emptyState.style.display = 'block';
+        table.style.display = 'none';
+      } else {
+        emptyState.style.display = 'none';
+        table.style.display = 'table';
+
+        filtered.forEach(guest => {
+          const tr = document.createElement('tr');
+          const isAttending = guest.attendance === 'si';
+
+          tr.innerHTML = `
+            <td style="font-size: 0.8rem; color: #6E6862;">${guest.date || '-'}</td>
+            <td style="font-weight: 600; white-space: normal; min-width: 160px;">${escapeHtml(guest.name)}</td>
+            <td>
+              <span class="status-badge ${isAttending ? 'status-yes' : 'status-no'}">
+                ${isAttending ? '✓ Sí Asiste' : '✕ No Asiste'}
+              </span>
+            </td>
+            <td style="text-align: center; font-weight: 600;">${isAttending ? (guest.adults || '1') : '-'}</td>
+            <td style="white-space: normal; min-width: 130px;">${isAttending ? escapeHtml(guest.kids || 'Ninguno') : '-'}</td>
+            <td style="white-space: normal; min-width: 140px;">${isAttending ? escapeHtml(guest.dietary || 'Ninguna') : '-'}</td>
+            <td style="text-align: center;">
+              <button class="btn-delete-row" data-id="${guest.id}" title="Eliminar registro">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                  <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                </svg>
+              </button>
+            </td>
+          `;
+
+          const delBtn = tr.querySelector('.btn-delete-row');
+          delBtn.addEventListener('click', () => {
+            if (confirm(`¿Eliminar a "${guest.name}" de la lista?`)) {
+              guests = guests.filter(item => item.id !== guest.id);
+              saveGuests();
+              renderTable(query);
+            }
+          });
+
+          tbody.appendChild(tr);
+        });
+      }
+    }
+
+    function exportToCSV() {
+      if (guests.length === 0) {
+        alert('No hay invitados registrados para exportar.');
+        return;
+      }
+
+      const headers = ['Fecha', 'Asistentes', 'Asistencia', 'Adultos', 'Niños y Edades', 'Dieta o Alergias'];
+      const rows = guests.map(g => [
+        `"${g.date || ''}"`,
+        `"${(g.name || '').replace(/"/g, '""')}"`,
+        `"${g.attendance === 'si' ? 'Sí Asiste' : 'No Asiste'}"`,
+        `"${g.attendance === 'si' ? (g.adults || '1') : '0'}"`,
+        `"${(g.kids || '').replace(/"/g, '""')}"`,
+        `"${(g.dietary || '').replace(/"/g, '""')}"`
+      ]);
+
+      const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\r\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.setAttribute('download', 'Invitados_Boda_Sofia_y_Alexander_2027.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      const div = document.createElement('div');
+      div.innerText = text;
+      return div.innerHTML;
+    }
+
+    // Inicialización y eventos
+    document.addEventListener('DOMContentLoaded', () => {
+      loadGuests();
+      renderTable();
+
+      document.getElementById('admin-search-input').addEventListener('input', (e) => {
+        renderTable(e.target.value.trim());
+      });
+
+      document.getElementById('btn-admin-export').addEventListener('click', exportToCSV);
+
+      // Modal para carga manual
+      const modal = document.getElementById('modal-add-guest');
+      document.getElementById('btn-open-modal').addEventListener('click', () => {
+        modal.classList.add('active');
+      });
+      document.getElementById('btn-close-modal').addEventListener('click', () => {
+        modal.classList.remove('active');
+      });
+
+      document.getElementById('form-manual-guest').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const now = new Date();
+        const formattedDate = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+        
+        const isAttending = document.getElementById('manual-attendance').value === 'si';
+
+        guests.unshift({
+          id: 'manual-' + Date.now(),
+          date: formattedDate,
+          name: document.getElementById('manual-name').value.trim(),
+          attendance: document.getElementById('manual-attendance').value,
+          adults: isAttending ? document.getElementById('manual-adults').value : '0',
+          kids: isAttending ? (document.getElementById('manual-kids').value.trim() || 'Ninguno') : '-',
+          dietary: isAttending ? (document.getElementById('manual-dietary').value.trim() || 'Ninguna') : '-'
+        });
+
+        saveGuests();
+        renderTable();
+        modal.classList.remove('active');
+        document.getElementById('form-manual-guest').reset();
+      });
+    });
+  </script>
+</body>
+
+</html>
