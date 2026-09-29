@@ -4,10 +4,14 @@ Una tarjeta de invitación web interactiva, moderna y de alta gama creada para c
 
 ---
 
-## 🔗 Enlaces del Proyecto
+## 🔗 Enlaces del Proyecto en Vercel
 
-- **Invitación Pública (para los invitados)**: [index.html](file:///c:/Users/alebo/OneDrive/Escritorio/Proyectos%20personales/Tarjeta%20de%20Invitacion%20Boda/index.html) (`http://localhost:8080/`)
-- **Panel Privado de Novios (solo para Sofia & Alexander)**: [invitados.html](file:///c:/Users/alebo/OneDrive/Escritorio/Proyectos%20personales/Tarjeta%20de%20Invitacion%20Boda/invitados.html) (`http://localhost:8080/invitados.html`)
+- **Invitación Pública (para compartir a los invitados)**:
+  👉 **`https://tarjeta-de-invitacion-boda-sya.vercel.app/`**
+- **Panel Privado de Novios (exclusivo para Sofia & Alexander)**:
+  👉 **`https://tarjeta-de-invitacion-boda-sya.vercel.app/invitados.html`**
+
+*(En local: `http://localhost:8080/` e `http://localhost:8080/invitados.html`)*
 
 ---
 

@@ -822,7 +822,7 @@ function initRsvpForm() {
       return;
     }
 
-    // 1. Guardar en la tabla organizada
+    // 1. Guardar en la tabla organizada local
     const now = new Date();
     const formattedDate = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
@@ -841,6 +841,20 @@ function initRsvpForm() {
     guestsData.unshift(newGuestEntry);
     saveStoredGuests();
     renderGuestTable();
+
+    // Sincronizar en tiempo real con la nube (para que aparezca en el panel de los novios)
+    fetch('/api/rsvp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newGuestEntry)
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log('Sincronizado con éxito en el panel de novios:', data);
+      })
+      .catch(err => {
+        console.warn('Sync en segundo plano:', err);
+      });
 
     // 2. Formatear y Enviar a WhatsApp
     let text = `💍 *CONFIRMACIÓN DE ASISTENCIA - BODA SOFIA Y ALEXANDER* 💍\n\n`;

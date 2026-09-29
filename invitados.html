@@ -386,6 +386,9 @@
         </button>
       </div>
       <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+        <button type="button" class="btn-action" id="btn-admin-refresh" style="background: #FCFAF6; border: 1px solid #C5A059; color: #9A7736;" title="Sincronizar con la nube">
+          🔄 Actualizar Lista
+        </button>
         <button type="button" class="btn-action btn-excel" id="btn-admin-export">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
             <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z" />
@@ -469,38 +472,71 @@
 
   <script>
     const STORAGE_KEY = 'wedding_confirmed_guests_sa_table_v2';
+    const CLOUD_DB = 'https://extendsclass.com/api/json-storage/bin/caceecb';
     let guests = [];
 
-    function loadGuests() {
+    async function loadGuests() {
+      // 1. Cargar desde LocalStorage primero (instantáneo)
       try {
         const stored = localStorage.getItem(STORAGE_KEY);
         if (stored) {
           guests = JSON.parse(stored);
-        } else {
-          guests = [
-            {
-              id: 'sample-1',
-              date: '28/09/2026 19:30',
-              name: 'Mariana & Carlos Rossi',
-              attendance: 'si',
-              adults: '2',
-              kids: '1 niño (5 años)',
-              dietary: 'Celíaco (Sin TACC)'
-            }
-          ];
-          saveGuests();
+          renderTable();
         }
       } catch (e) {
-        console.warn('Error loading guests:', e);
-        guests = [];
+        console.warn('Local storage error:', e);
+      }
+
+      // 2. Sincronizar en vivo desde la API de Vercel (/api/rsvp)
+      try {
+        const res = await fetch('/api/rsvp');
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data.guests) && data.guests.length > 0) {
+            guests = data.guests;
+            saveGuestsLocal();
+            renderTable();
+            return;
+          }
+        }
+      } catch (e) {
+        console.warn('No se pudo conectar a /api/rsvp:', e);
+      }
+
+      // 3. Fallback directo a base de datos de respaldo
+      try {
+        const res = await fetch(CLOUD_DB);
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data.guests)) {
+            guests = data.guests;
+            saveGuestsLocal();
+            renderTable();
+          }
+        }
+      } catch (e) {
+        console.warn('Error fetching cloud db:', e);
       }
     }
 
-    function saveGuests() {
+    function saveGuestsLocal() {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(guests));
       } catch (e) {
-        console.warn('Error saving guests:', e);
+        console.warn('Error saving guests locally:', e);
+      }
+    }
+
+    async function saveGuestsCloud() {
+      saveGuestsLocal();
+      try {
+        await fetch('/api/rsvp', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ guests: guests })
+        });
+      } catch (err) {
+        console.warn('Error syncing via /api/rsvp:', err);
       }
     }
 
@@ -508,7 +544,6 @@
       const attending = guests.filter(g => g.attendance === 'si');
       const totalAdults = attending.reduce((acc, curr) => acc + parseInt(curr.adults || '1', 10), 0);
       
-      // Contar niños estimados sumando números si aparecen
       let totalKids = 0;
       attending.forEach(g => {
         if (g.kids && g.kids !== '-' && !g.kids.toLowerCase().includes('ningun')) {
@@ -576,10 +611,10 @@
           `;
 
           const delBtn = tr.querySelector('.btn-delete-row');
-          delBtn.addEventListener('click', () => {
+          delBtn.addEventListener('click', async () => {
             if (confirm(`¿Eliminar a "${guest.name}" de la lista?`)) {
               guests = guests.filter(item => item.id !== guest.id);
-              saveGuests();
+              await saveGuestsCloud();
               renderTable(query);
             }
           });
@@ -625,10 +660,16 @@
     // Inicialización y eventos
     document.addEventListener('DOMContentLoaded', () => {
       loadGuests();
-      renderTable();
 
       document.getElementById('admin-search-input').addEventListener('input', (e) => {
         renderTable(e.target.value.trim());
+      });
+
+      document.getElementById('btn-admin-refresh').addEventListener('click', async () => {
+        const refreshBtn = document.getElementById('btn-admin-refresh');
+        refreshBtn.innerText = '⌛ Actualizando...';
+        await loadGuests();
+        refreshBtn.innerText = '🔄 Actualizar Lista';
       });
 
       document.getElementById('btn-admin-export').addEventListener('click', exportToCSV);
@@ -642,7 +683,7 @@
         modal.classList.remove('active');
       });
 
-      document.getElementById('form-manual-guest').addEventListener('submit', (e) => {
+      document.getElementById('form-manual-guest').addEventListener('submit', async (e) => {
         e.preventDefault();
         const now = new Date();
         const formattedDate = `${String(now.getDate()).padStart(2, '0')}/${String(now.getMonth() + 1).padStart(2, '0')}/${now.getFullYear()} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
@@ -659,7 +700,7 @@
           dietary: isAttending ? (document.getElementById('manual-dietary').value.trim() || 'Ninguna') : '-'
         });
 
-        saveGuests();
+        await saveGuestsCloud();
         renderTable();
         modal.classList.remove('active');
         document.getElementById('form-manual-guest').reset();
