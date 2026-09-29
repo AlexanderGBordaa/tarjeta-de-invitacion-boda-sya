@@ -842,19 +842,60 @@ function initRsvpForm() {
     saveStoredGuests();
     renderGuestTable();
 
-    // Sincronizar en tiempo real con la nube (para que aparezca en el panel de los novios)
-    fetch('/api/rsvp', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newGuestEntry)
-    })
-      .then(res => res.json())
-      .then(data => {
-        console.log('Sincronizado con éxito en el panel de novios:', data);
-      })
-      .catch(err => {
-        console.warn('Sync en segundo plano:', err);
-      });
+    // Sincronizar en tiempo real con la nube garantizando ACUMULACIÓN de todos los invitados
+    async function syncToCloud(entry) {
+      // 1. Intentar endpoint serverless de Vercel
+      try {
+        const res = await fetch('/api/rsvp', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(entry)
+        });
+        if (res.ok) {
+          const json = await res.json();
+          if (json && json.success) {
+            console.log('Sincronizado vía Vercel API');
+            return;
+          }
+        }
+      } catch (e) {
+        // Fallback directo si no está en Vercel
+      }
+
+      // 2. Fallback directo a bin en la nube acumulando con todo lo existente
+      try {
+        const CLOUD_DB = 'https://extendsclass.com/api/json-storage/bin/caceecb';
+        const getRes = await fetch(CLOUD_DB, { cache: 'no-store' });
+        let existing = [];
+        if (getRes.ok) {
+          const cloudData = await getRes.json();
+          if (Array.isArray(cloudData.guests)) {
+            existing = cloudData.guests;
+          } else if (Array.isArray(cloudData)) {
+            existing = cloudData;
+          }
+        }
+
+        // Unir lista acumulada sin pisar a nadie
+        const map = new Map();
+        [entry, ...existing, ...guestsData].forEach((g) => {
+          if (!g || !g.name) return;
+          const k = (g.name || '').trim().toLowerCase();
+          if (!map.has(k)) map.set(k, g);
+        });
+        const combined = Array.from(map.values());
+
+        await fetch(CLOUD_DB, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ guests: combined })
+        });
+        console.log('Sincronizado vía Fallback Cloud');
+      } catch (err) {
+        console.warn('Error en sync cloud de respaldo:', err);
+      }
+    }
+    syncToCloud(newGuestEntry);
 
     // 2. Formatear y Enviar a WhatsApp
     let text = `💍 *CONFIRMACIÓN DE ASISTENCIA - BODA SOFIA Y ALEXANDER* 💍\n\n`;

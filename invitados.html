@@ -475,13 +475,38 @@
     const CLOUD_DB = 'https://extendsclass.com/api/json-storage/bin/caceecb';
     let guests = [];
 
+    function mergeGuestLists(listA, listB) {
+      const map = new Map();
+      const combined = [...(listA || []), ...(listB || [])];
+
+      combined.forEach(item => {
+        if (!item || !item.name) return;
+        // Identificador único: id si existe, o nombre + fecha
+        const cleanName = (item.name || '').trim().toLowerCase();
+        const key = item.id || (cleanName + '_' + (item.date || ''));
+
+        if (!map.has(key)) {
+          map.set(key, item);
+        } else {
+          // Si ya existe, conservar y enriquecer con los datos más completos
+          const existing = map.get(key);
+          map.set(key, { ...existing, ...item });
+        }
+      });
+
+      return Array.from(map.values());
+    }
+
     async function loadGuests() {
-      // 1. Cargar desde LocalStorage primero (instantáneo)
+      // 1. Cargar desde LocalStorage primero
       try {
         const stored = localStorage.getItem(STORAGE_KEY);
         if (stored) {
-          guests = JSON.parse(stored);
-          renderTable();
+          const localList = JSON.parse(stored);
+          if (Array.isArray(localList)) {
+            guests = mergeGuestLists(guests, localList);
+            renderTable();
+          }
         }
       } catch (e) {
         console.warn('Local storage error:', e);
@@ -493,7 +518,7 @@
         if (res.ok) {
           const data = await res.json();
           if (Array.isArray(data.guests) && data.guests.length > 0) {
-            guests = data.guests;
+            guests = mergeGuestLists(guests, data.guests);
             saveGuestsLocal();
             renderTable();
             return;
@@ -508,8 +533,8 @@
         const res = await fetch(CLOUD_DB);
         if (res.ok) {
           const data = await res.json();
-          if (Array.isArray(data.guests)) {
-            guests = data.guests;
+          if (Array.isArray(data.guests) && data.guests.length > 0) {
+            guests = mergeGuestLists(guests, data.guests);
             saveGuestsLocal();
             renderTable();
           }
@@ -690,7 +715,7 @@
         
         const isAttending = document.getElementById('manual-attendance').value === 'si';
 
-        guests.unshift({
+        const newGuest = {
           id: 'manual-' + Date.now(),
           date: formattedDate,
           name: document.getElementById('manual-name').value.trim(),
@@ -698,10 +723,12 @@
           adults: isAttending ? document.getElementById('manual-adults').value : '0',
           kids: isAttending ? (document.getElementById('manual-kids').value.trim() || 'Ninguno') : '-',
           dietary: isAttending ? (document.getElementById('manual-dietary').value.trim() || 'Ninguna') : '-'
-        });
+        };
 
-        await saveGuestsCloud();
+        guests = mergeGuestLists([newGuest], guests);
+        saveGuestsLocal();
         renderTable();
+        await saveGuestsCloud();
         modal.classList.remove('active');
         document.getElementById('form-manual-guest').reset();
       });
