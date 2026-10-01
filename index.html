@@ -15,7 +15,7 @@
   <meta property="og:title" content="Boda de Sofia & Alexander 💍">
   <meta property="og:description"
     content="¡Nos casamos! Toca para abrir nuestra invitación interactiva. 27 de Noviembre de 2027 en Establecimiento La Angélica.">
-  <meta property="og:image" content="assets/images/couple-1.jpg">
+  <meta property="og:image" content="assets/images/hero.jpg">
   <meta property="twitter:card" content="summary_large_image">
 
   <!-- Favicon Monograma -->
@@ -83,15 +83,9 @@
   </section>
 
   <!-- ==========================================================================
-       BARRA DE CONTROL FLOTANTE (MÚSICA Y CONFIRMACIÓN RÁPIDA)
+       BARRA DE CONTROL FLOTANTE (CONFIRMACIÓN RÁPIDA)
        ========================================================================== -->
   <nav class="floating-nav" id="floating-nav" aria-label="Controles de navegación">
-    <button class="music-toggle-btn" id="music-toggle-btn" aria-label="Reproducir o pausar música de fondo">
-      <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-        <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
-      </svg>
-    </button>
-    <span class="music-label" id="music-label">Música</span>
     <a href="#galeria-fotos" class="quick-nav-pill">Fotos</a>
     <a href="#pago-tarjeta" class="quick-nav-pill">Tarjeta</a>
     <a href="#regalo-boda" class="quick-nav-pill">Regalo</a>
@@ -119,7 +113,7 @@
 
         <!-- Fotografía destacada de la pareja -->
         <div class="couple-hero-image-wrap">
-          <img src="assets/images/couple-1.jpg" alt="Sofia y Alexander en Establecimiento La Angélica"
+          <img src="assets/images/hero.jpg" alt="Sofia y Alexander en Establecimiento La Angélica"
             class="couple-hero-image" id="hero-img">
         </div>
 
@@ -280,17 +274,7 @@
         </p>
 
         <div class="gallery-grid" id="gallery-grid">
-          <!-- Renderizado automático con las fotos de la sesión -->
-        </div>
-
-        <div class="gallery-actions-bar">
-          <label for="photo-file-input" class="upload-photo-label" title="Subir un recuerdo fotográfico">
-            <svg viewBox="0 0 24 24">
-              <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
-            </svg>
-            Agregar Foto a la Galería
-          </label>
-          <input type="file" id="photo-file-input" accept="image/*" multiple>
+          <!-- Renderizado automático con las 4 fotos de la sesión -->
         </div>
       </section>
 

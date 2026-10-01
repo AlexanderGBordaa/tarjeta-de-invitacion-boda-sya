@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initEnvelope();
   initCountdown();
   initPetalsCanvas();
-  initMusicPlayer();
   initGallery();
   initClipboardButtons();
   initCalendarButtons();
@@ -41,9 +40,6 @@ function initEnvelope() {
 
     // Iniciar animación de apertura de solapas
     envelope.classList.add('is-opening');
-
-    // Reproducir música de fondo automáticamente si el usuario interactuó
-    startBackgroundMelody();
 
     setTimeout(() => {
       envelopeOverlay.classList.add('opened');
@@ -130,7 +126,7 @@ function initPetalsCanvas() {
       this.rotationSpeed = (Math.random() - 0.5) * 1.5;
       this.opacity = Math.random() * 0.45 + 0.25;
       this.isGold = Math.random() > 0.6;
-      this.color = this.isGold ? 'rgba(212, 175, 55, ' : 'rgba(235, 175, 175, ';
+      this.color = this.isGold ? 'rgba(194, 155, 56, ' : 'rgba(122, 153, 119, ';
     }
 
     update() {
@@ -366,12 +362,11 @@ function updateMusicUI(playing) {
 }
 
 /* ==========================================================================
-   6. GALERÍA DE FOTOS Y LIGHTBOX CON SOPORTE PARA AGREGAR FOTOS
+   6. GALERÍA DE FOTOS Y LIGHTBOX
    ========================================================================== */
 const defaultPhotos = [
   { src: 'assets/images/couple-1.jpg', caption: 'Sofia & Alexander — Juntos frente al lago' },
   { src: 'assets/images/couple-2.jpg', caption: 'Un momento inolvidable — ¡Dijo que sí!' },
-  { src: 'assets/images/couple-3.jpg', caption: 'Nuestra felicidad y el anillo de compromiso' },
   { src: 'assets/images/couple-4.jpg', caption: 'El inicio de nuestra mayor aventura' },
   { src: 'assets/images/couple-5.jpg', caption: 'Amor, flores y nuevos comienzos' }
 ];
@@ -380,20 +375,7 @@ let galleryPhotos = [...defaultPhotos];
 let currentLightboxIndex = 0;
 
 function initGallery() {
-  try {
-    const saved = localStorage.getItem('wedding_custom_photos_sa');
-    if (saved) {
-      const custom = JSON.parse(saved);
-      if (Array.isArray(custom)) {
-        // Preservar las 5 fotos oficiales y concatenar fotos extra subidas
-        const extraPhotos = custom.filter(p => p.src && !p.src.includes('assets/images/'));
-        galleryPhotos = [...defaultPhotos, ...extraPhotos];
-      }
-    }
-  } catch (e) {
-    console.warn('Storage not accessible:', e);
-  }
-
+  galleryPhotos = [...defaultPhotos];
   renderGallery();
 
   // Abrir lightbox al tocar la foto principal del hero
@@ -401,12 +383,9 @@ function initGallery() {
   if (heroWrap) {
     heroWrap.style.cursor = 'pointer';
     heroWrap.title = 'Toca para ampliar foto';
-    heroWrap.addEventListener('click', () => openLightbox(0));
-  }
-
-  const photoInput = document.getElementById('photo-file-input');
-  if (photoInput) {
-    photoInput.addEventListener('change', handlePhotoUpload);
+    heroWrap.addEventListener('click', () => {
+      openSinglePhoto('assets/images/hero.jpg', 'Sofia & Alexander — Nuestra Boda');
+    });
   }
 
   const lightboxModal = document.getElementById('lightbox-modal');
@@ -488,45 +467,43 @@ function renderGallery() {
   });
 }
 
-function handlePhotoUpload(event) {
-  const files = event.target.files;
-  if (!files || files.length === 0) return;
-
-  Array.from(files).forEach((file) => {
-    if (!file.type.startsWith('image/')) return;
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      galleryPhotos.unshift({
-        src: e.target.result,
-        caption: `Recuerdo especial - Sofia & Alexander`
-      });
-
-      try {
-        localStorage.setItem('wedding_custom_photos_sa', JSON.stringify(galleryPhotos.slice(0, 10)));
-      } catch (err) {
-        console.warn('LocalStorage limit reached for image storage');
-      }
-
-      renderGallery();
-      showToast('¡Foto agregada a la galería con éxito! ✨');
-    };
-    reader.readAsDataURL(file);
-  });
-
-  event.target.value = '';
-}
-
 function openLightbox(index) {
   currentLightboxIndex = index;
   const modal = document.getElementById('lightbox-modal');
   const img = document.getElementById('lightbox-img');
   const caption = document.getElementById('lightbox-caption');
+  const prevBtn = document.getElementById('lightbox-prev');
+  const nextBtn = document.getElementById('lightbox-next');
 
   if (!modal || !img) return;
+
+  if (prevBtn) prevBtn.style.display = 'flex';
+  if (nextBtn) nextBtn.style.display = 'flex';
 
   img.src = galleryPhotos[currentLightboxIndex].src;
   if (caption) {
     caption.innerHTML = `<span style="opacity: 0.8; font-size: 0.85rem;">${currentLightboxIndex + 1} de ${galleryPhotos.length}</span><br><strong>${galleryPhotos[currentLightboxIndex].caption || 'Sofia & Alexander'}</strong>`;
+  }
+
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+function openSinglePhoto(src, captionText) {
+  const modal = document.getElementById('lightbox-modal');
+  const img = document.getElementById('lightbox-img');
+  const caption = document.getElementById('lightbox-caption');
+  const prevBtn = document.getElementById('lightbox-prev');
+  const nextBtn = document.getElementById('lightbox-next');
+
+  if (!modal || !img) return;
+
+  if (prevBtn) prevBtn.style.display = 'none';
+  if (nextBtn) nextBtn.style.display = 'none';
+
+  img.src = src;
+  if (caption) {
+    caption.innerHTML = `<strong>${captionText}</strong>`;
   }
 
   modal.classList.add('active');
