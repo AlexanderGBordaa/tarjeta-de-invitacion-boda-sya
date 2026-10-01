@@ -92,6 +92,7 @@
       </svg>
     </button>
     <span class="music-label" id="music-label">Música</span>
+    <a href="#galeria-fotos" class="quick-nav-pill">Fotos</a>
     <a href="#pago-tarjeta" class="quick-nav-pill">Tarjeta</a>
     <a href="#regalo-boda" class="quick-nav-pill">Regalo</a>
     <a href="#rsvp-section" class="quick-rsvp-btn" id="nav-rsvp-btn">Confirmar</a>
@@ -265,6 +266,31 @@
             <br>
             * El evento se celebra en parte en jardines: recomendamos calzado cómodo o tacos anchos.
           </p>
+        </div>
+      </section>
+
+      <!-- ==========================================================================
+           GALERÍA DE FOTOS: NUESTROS MOMENTOS
+           ========================================================================== -->
+      <section class="gallery-section" id="galeria-fotos" aria-labelledby="gallery-heading">
+        <h2 id="gallery-heading" class="section-title">Nuestros Momentos</h2>
+        <div class="section-divider"><span class="section-divider-icon">✦</span></div>
+        <p class="gallery-subtitle" style="text-align: center; color: var(--color-text-muted); font-size: 0.95rem; margin-top: -15px; margin-bottom: 25px;">
+          Un recorrido de amor, risas y la promesa de un camino juntos
+        </p>
+
+        <div class="gallery-grid" id="gallery-grid">
+          <!-- Renderizado automático con las fotos de la sesión -->
+        </div>
+
+        <div class="gallery-actions-bar">
+          <label for="photo-file-input" class="upload-photo-label" title="Subir un recuerdo fotográfico">
+            <svg viewBox="0 0 24 24">
+              <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+            </svg>
+            Agregar Foto a la Galería
+          </label>
+          <input type="file" id="photo-file-input" accept="image/*" multiple>
         </div>
       </section>
 

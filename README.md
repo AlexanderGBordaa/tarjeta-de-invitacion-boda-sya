@@ -49,7 +49,9 @@ Tarjeta de Invitacion Boda/
 │   └── app.js            # Lógica interactiva, audio, sincronización y envío a WhatsApp
 └── assets/
     └── images/
-        ├── couple-1.jpg  # Foto principal
-        ├── couple-2.jpg  # Foto 2
-        └── couple-3.jpg  # Foto 3
+        ├── couple-1.jpg  # Foto principal (Hero)
+        ├── couple-2.jpg  # Foto 2 (Compromiso en el puente)
+        ├── couple-3.jpg  # Foto 3 (Anillo y flores amarillas)
+        ├── couple-4.jpg  # Foto 4 (Colocación del anillo)
+        └── couple-5.jpg  # Foto 5 (Ramo de flores y sonrisas)
 ```

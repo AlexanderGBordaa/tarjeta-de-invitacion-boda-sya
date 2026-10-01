@@ -369,9 +369,11 @@ function updateMusicUI(playing) {
    6. GALERÍA DE FOTOS Y LIGHTBOX CON SOPORTE PARA AGREGAR FOTOS
    ========================================================================== */
 const defaultPhotos = [
-  { src: 'assets/images/couple-1.jpg', caption: 'Sofia & Alexander - Establecimiento La Angélica' },
-  { src: 'assets/images/couple-2.jpg', caption: 'Nuestra historia de amor' },
-  { src: 'assets/images/couple-3.jpg', caption: 'Celebrando nuestro compromiso' }
+  { src: 'assets/images/couple-1.jpg', caption: 'Sofia & Alexander — Juntos frente al lago' },
+  { src: 'assets/images/couple-2.jpg', caption: 'Un momento inolvidable — ¡Dijo que sí!' },
+  { src: 'assets/images/couple-3.jpg', caption: 'Nuestra felicidad y el anillo de compromiso' },
+  { src: 'assets/images/couple-4.jpg', caption: 'El inicio de nuestra mayor aventura' },
+  { src: 'assets/images/couple-5.jpg', caption: 'Amor, flores y nuevos comienzos' }
 ];
 
 let galleryPhotos = [...defaultPhotos];
@@ -381,13 +383,26 @@ function initGallery() {
   try {
     const saved = localStorage.getItem('wedding_custom_photos_sa');
     if (saved) {
-      galleryPhotos = JSON.parse(saved);
+      const custom = JSON.parse(saved);
+      if (Array.isArray(custom)) {
+        // Preservar las 5 fotos oficiales y concatenar fotos extra subidas
+        const extraPhotos = custom.filter(p => p.src && !p.src.includes('assets/images/'));
+        galleryPhotos = [...defaultPhotos, ...extraPhotos];
+      }
     }
   } catch (e) {
     console.warn('Storage not accessible:', e);
   }
 
   renderGallery();
+
+  // Abrir lightbox al tocar la foto principal del hero
+  const heroWrap = document.querySelector('.couple-hero-image-wrap');
+  if (heroWrap) {
+    heroWrap.style.cursor = 'pointer';
+    heroWrap.title = 'Toca para ampliar foto';
+    heroWrap.addEventListener('click', () => openLightbox(0));
+  }
 
   const photoInput = document.getElementById('photo-file-input');
   if (photoInput) {
@@ -417,10 +432,29 @@ function initGallery() {
         closeLightbox();
       }
     });
+
+    // Soporte swipe para pantallas táctiles
+    let touchStartX = 0;
+    let touchEndX = 0;
+    lightboxModal.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    lightboxModal.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      const diff = touchEndX - touchStartX;
+      if (Math.abs(diff) > 40) {
+        if (diff < 0) {
+          changeLightboxPhoto(1);
+        } else {
+          changeLightboxPhoto(-1);
+        }
+      }
+    }, { passive: true });
   }
 
   document.addEventListener('keydown', (e) => {
-    if (!lightboxModal.classList.contains('active')) return;
+    if (!lightboxModal || !lightboxModal.classList.contains('active')) return;
     if (e.key === 'Escape') closeLightbox();
     if (e.key === 'ArrowLeft') changeLightboxPhoto(-1);
     if (e.key === 'ArrowRight') changeLightboxPhoto(1);
@@ -492,7 +526,7 @@ function openLightbox(index) {
 
   img.src = galleryPhotos[currentLightboxIndex].src;
   if (caption) {
-    caption.innerText = galleryPhotos[currentLightboxIndex].caption || '';
+    caption.innerHTML = `<span style="opacity: 0.8; font-size: 0.85rem;">${currentLightboxIndex + 1} de ${galleryPhotos.length}</span><br><strong>${galleryPhotos[currentLightboxIndex].caption || 'Sofia & Alexander'}</strong>`;
   }
 
   modal.classList.add('active');
@@ -516,7 +550,7 @@ function changeLightboxPhoto(direction) {
     img.src = galleryPhotos[currentLightboxIndex].src;
   }
   if (caption) {
-    caption.innerText = galleryPhotos[currentLightboxIndex].caption || '';
+    caption.innerHTML = `<span style="opacity: 0.8; font-size: 0.85rem;">${currentLightboxIndex + 1} de ${galleryPhotos.length}</span><br><strong>${galleryPhotos[currentLightboxIndex].caption || 'Sofia & Alexander'}</strong>`;
   }
 }
 
