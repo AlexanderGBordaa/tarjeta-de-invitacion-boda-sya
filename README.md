@@ -17,8 +17,10 @@ Una tarjeta de invitación web interactiva, moderna y de alta gama creada para c
 
 ## 📱 WhatsApp de Recepción
 
-- Todas las confirmaciones de asistencia y los comprobantes de pago de la tarjeta se dirigen automáticamente al número:
+- Todas las confirmaciones de asistencia y los comprobantes de pago de la tarjeta se dirigen automáticamente a Alexander al número:
   **`3454048992`** (`+54 9 3454048992`)
+- Los comprobantes de regalos para la boda se dirigen directamente a Fran al número:
+  **`3442668727`** (`+54 9 3442 668727`)
 
 ---
 
