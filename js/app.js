@@ -362,21 +362,25 @@ function updateMusicUI(playing) {
 }
 
 /* ==========================================================================
-   6. GALERÍA DE FOTOS Y LIGHTBOX
+   6. GALERÍA DE FOTOS DINÁMICA (SLIDER / CARRUSEL) Y LIGHTBOX
    ========================================================================== */
 const defaultPhotos = [
-  { src: 'assets/images/couple-1.jpg', caption: 'Sofia & Alexander — Juntos frente al lago' },
-  { src: 'assets/images/couple-2.jpg', caption: 'Un momento inolvidable — ¡Dijo que sí!' },
-  { src: 'assets/images/couple-4.jpg', caption: 'El inicio de nuestra mayor aventura' },
-  { src: 'assets/images/couple-5.jpg', caption: 'Amor, flores y nuevos comienzos' }
+  { src: 'assets/images/couple-1.jpg', caption: 'La propuesta — Un momento para siempre' },
+  { src: 'assets/images/couple-2.jpg', caption: '¡Dijo que sí! — Sofia & Alexander' },
+  { src: 'assets/images/couple-3.jpg', caption: 'Flores y la promesa de una vida juntos' },
+  { src: 'assets/images/couple-4.jpg', caption: 'Junto al lago, soñando nuestro futuro' },
+  { src: 'assets/images/couple-5.jpg', caption: 'Nuestra promesa de amor eterno' }
 ];
 
 let galleryPhotos = [...defaultPhotos];
 let currentLightboxIndex = 0;
+let currentSlideIndex = 0;
+let slideAutoPlayTimer = null;
+const SLIDE_DURATION = 4000;
 
 function initGallery() {
   galleryPhotos = [...defaultPhotos];
-  renderGallery();
+  renderDynamicSlider();
 
   // Abrir lightbox al tocar la foto principal del hero
   const heroWrap = document.querySelector('.couple-hero-image-wrap');
@@ -388,6 +392,7 @@ function initGallery() {
     });
   }
 
+  // Configurar lightbox modal
   const lightboxModal = document.getElementById('lightbox-modal');
   const lightboxClose = document.getElementById('lightbox-close');
   const lightboxPrev = document.getElementById('lightbox-prev');
@@ -412,7 +417,7 @@ function initGallery() {
       }
     });
 
-    // Soporte swipe para pantallas táctiles
+    // Soporte swipe para pantallas táctiles en lightbox
     let touchStartX = 0;
     let touchEndX = 0;
     lightboxModal.addEventListener('touchstart', (e) => {
@@ -440,31 +445,172 @@ function initGallery() {
   });
 }
 
-function renderGallery() {
-  const galleryGrid = document.getElementById('gallery-grid');
-  if (!galleryGrid) return;
+function renderDynamicSlider() {
+  const track = document.getElementById('slider-track');
+  const dotsContainer = document.getElementById('slider-dots');
+  const badge = document.getElementById('slider-badge');
+  const prevBtn = document.getElementById('slider-btn-prev');
+  const nextBtn = document.getElementById('slider-btn-next');
+  const expandBtn = document.getElementById('slider-expand-btn');
+  const viewport = document.getElementById('slider-viewport');
 
-  galleryGrid.innerHTML = '';
+  if (!track) return;
+
+  track.innerHTML = '';
+  if (dotsContainer) dotsContainer.innerHTML = '';
 
   galleryPhotos.forEach((photo, index) => {
-    const item = document.createElement('div');
-    item.className = 'gallery-item';
-    item.setAttribute('role', 'button');
-    item.setAttribute('tabindex', '0');
-    item.setAttribute('aria-label', photo.caption || `Foto de boda ${index + 1}`);
-
-    item.innerHTML = `
-      <img src="${photo.src}" alt="${photo.caption || 'Foto de boda'}" class="gallery-img" loading="lazy" />
-      <div class="gallery-overlay">
-        <svg viewBox="0 0 24 24" width="30" height="30" fill="currentColor">
-          <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
-        </svg>
+    // Crear slide
+    const slide = document.createElement('div');
+    slide.className = `slider-slide ${index === 0 ? 'active' : ''}`;
+    slide.setAttribute('role', 'group');
+    slide.setAttribute('aria-label', `${index + 1} de ${galleryPhotos.length}`);
+    slide.innerHTML = `
+      <img src="${photo.src}" alt="${photo.caption || 'Foto de Sofia y Alexander'}" loading="${index === 0 ? 'eager' : 'lazy'}" />
+      <div class="slider-slide-overlay">
+        <p class="slider-slide-caption">${photo.caption || ''}</p>
       </div>
     `;
 
-    item.addEventListener('click', () => openLightbox(index));
-    galleryGrid.appendChild(item);
+    slide.addEventListener('click', () => {
+      openLightbox(index);
+    });
+
+    track.appendChild(slide);
+
+    // Crear punto indicador
+    if (dotsContainer) {
+      const dot = document.createElement('button');
+      dot.className = `slider-dot ${index === 0 ? 'active' : ''}`;
+      dot.type = 'button';
+      dot.setAttribute('aria-label', `Ir a foto ${index + 1}`);
+      dot.setAttribute('role', 'tab');
+      dot.setAttribute('aria-selected', index === 0 ? 'true' : 'false');
+      dot.addEventListener('click', (e) => {
+        e.stopPropagation();
+        goToSlide(index);
+        resetAutoSlide();
+      });
+      dotsContainer.appendChild(dot);
+    }
   });
+
+  function updateSliderView() {
+    track.style.transform = `translateX(-${currentSlideIndex * 100}%)`;
+
+    // Actualizar slides activos
+    const slides = track.querySelectorAll('.slider-slide');
+    slides.forEach((s, idx) => {
+      s.classList.toggle('active', idx === currentSlideIndex);
+    });
+
+    // Actualizar dots
+    if (dotsContainer) {
+      const dots = dotsContainer.querySelectorAll('.slider-dot');
+      dots.forEach((d, idx) => {
+        const isActive = idx === currentSlideIndex;
+        d.classList.toggle('active', isActive);
+        d.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      });
+    }
+
+    // Actualizar badge
+    if (badge) {
+      badge.textContent = `${currentSlideIndex + 1} / ${galleryPhotos.length}`;
+    }
+  }
+
+  function goToSlide(index) {
+    currentSlideIndex = (index + galleryPhotos.length) % galleryPhotos.length;
+    updateSliderView();
+  }
+
+  function nextSlide() {
+    goToSlide(currentSlideIndex + 1);
+  }
+
+  function prevSlide() {
+    goToSlide(currentSlideIndex - 1);
+  }
+
+  function startAutoSlide() {
+    stopAutoSlide();
+    slideAutoPlayTimer = setInterval(nextSlide, SLIDE_DURATION);
+  }
+
+  function stopAutoSlide() {
+    if (slideAutoPlayTimer) {
+      clearInterval(slideAutoPlayTimer);
+      slideAutoPlayTimer = null;
+    }
+  }
+
+  function resetAutoSlide() {
+    stopAutoSlide();
+    startAutoSlide();
+  }
+
+  if (prevBtn) {
+    prevBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      prevSlide();
+      resetAutoSlide();
+    });
+  }
+
+  if (nextBtn) {
+    nextBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      nextSlide();
+      resetAutoSlide();
+    });
+  }
+
+  if (expandBtn) {
+    expandBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openLightbox(currentSlideIndex);
+    });
+  }
+
+  // Pausar auto-avance al posar el ratón
+  if (viewport) {
+    viewport.addEventListener('mouseenter', stopAutoSlide);
+    viewport.addEventListener('mouseleave', startAutoSlide);
+
+    // Swipe táctil en móvil
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let isSwiping = false;
+
+    viewport.addEventListener('touchstart', (e) => {
+      stopAutoSlide();
+      touchStartX = e.changedTouches[0].screenX;
+      touchStartY = e.changedTouches[0].screenY;
+      isSwiping = true;
+    }, { passive: true });
+
+    viewport.addEventListener('touchend', (e) => {
+      if (!isSwiping) return;
+      isSwiping = false;
+      const touchEndX = e.changedTouches[0].screenX;
+      const touchEndY = e.changedTouches[0].screenY;
+      const diffX = touchEndX - touchStartX;
+      const diffY = touchEndY - touchStartY;
+
+      if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 35) {
+        if (diffX < 0) {
+          nextSlide();
+        } else {
+          prevSlide();
+        }
+      }
+      startAutoSlide();
+    }, { passive: true });
+  }
+
+  updateSliderView();
+  startAutoSlide();
 }
 
 function openLightbox(index) {

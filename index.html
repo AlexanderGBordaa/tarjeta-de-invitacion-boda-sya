@@ -264,17 +264,40 @@
       </section>
 
       <!-- ==========================================================================
-           GALERÍA DE FOTOS: NUESTROS MOMENTOS
+           GALERÍA DE FOTOS DINÁMICA (CARRUSEL INTERACTIVO)
            ========================================================================== -->
-      <section class="gallery-section" id="galeria-fotos" aria-labelledby="gallery-heading">
-        <h2 id="gallery-heading" class="section-title">Nuestros Momentos</h2>
-        <div class="section-divider"><span class="section-divider-icon">✦</span></div>
-        <p class="gallery-subtitle" style="text-align: center; color: var(--color-text-muted); font-size: 0.95rem; margin-top: -15px; margin-bottom: 25px;">
-          Un recorrido de amor, risas y la promesa de un camino juntos
-        </p>
+      <section class="gallery-section" id="galeria-fotos" aria-label="Fotografías de Sofia y Alexander">
+        <div class="dynamic-gallery-slider" id="dynamic-gallery-slider">
+          <div class="slider-viewport" id="slider-viewport" title="Toca o desliza para ver fotos">
+            <div class="slider-track" id="slider-track">
+              <!-- Slides generados dinámicamente con las 5 fotos -->
+            </div>
 
-        <div class="gallery-grid" id="gallery-grid">
-          <!-- Renderizado automático con las 4 fotos de la sesión -->
+            <!-- Botones anterior / siguiente -->
+            <button class="slider-btn slider-btn-prev" id="slider-btn-prev" aria-label="Foto anterior" type="button">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+            </button>
+            <button class="slider-btn slider-btn-next" id="slider-btn-next" aria-label="Siguiente foto" type="button">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+
+            <!-- Badge contador -->
+            <div class="slider-badge" id="slider-badge">1 / 5</div>
+
+            <!-- Botón para ver en pantalla completa -->
+            <button class="slider-expand-btn" id="slider-expand-btn" aria-label="Ver foto en pantalla completa" title="Ampliar fotografía" type="button">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Puntos indicadores (dots) -->
+          <div class="slider-dots" id="slider-dots" role="tablist" aria-label="Paginación de fotos"></div>
         </div>
       </section>
 
