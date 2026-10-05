@@ -466,10 +466,7 @@ function renderDynamicSlider() {
     slide.setAttribute('role', 'group');
     slide.setAttribute('aria-label', `${index + 1} de ${galleryPhotos.length}`);
     slide.innerHTML = `
-      <img src="${photo.src}" alt="${photo.caption || 'Foto de Sofia y Alexander'}" loading="${index === 0 ? 'eager' : 'lazy'}" />
-      <div class="slider-slide-overlay">
-        <p class="slider-slide-caption">${photo.caption || ''}</p>
-      </div>
+      <img src="${photo.src}" alt="Sofia & Alexander" loading="${index === 0 ? 'eager' : 'lazy'}" />
     `;
 
     slide.addEventListener('click', () => {
@@ -628,7 +625,7 @@ function openLightbox(index) {
 
   img.src = galleryPhotos[currentLightboxIndex].src;
   if (caption) {
-    caption.innerHTML = `<span style="opacity: 0.8; font-size: 0.85rem;">${currentLightboxIndex + 1} de ${galleryPhotos.length}</span><br><strong>${galleryPhotos[currentLightboxIndex].caption || 'Sofia & Alexander'}</strong>`;
+    caption.innerHTML = `<span style="opacity: 0.85; font-size: 0.9rem;">${currentLightboxIndex + 1} de ${galleryPhotos.length}</span>`;
   }
 
   modal.classList.add('active');
@@ -946,28 +943,12 @@ function escapeHtml(text) {
    ========================================================================== */
 function initRsvpForm() {
   const form = document.getElementById('rsvp-form');
-  const attendanceRadios = document.querySelectorAll('input[name="attendance"]');
-  const groupGuestCount = document.getElementById('group-guest-count');
-  const groupKidsInfo = document.getElementById('group-kids-info');
-  const groupDietaryMenu = document.getElementById('group-dietary-menu');
-
   if (!form) return;
-
-  // Ocultar opciones de comida/niños/personas si no asiste
-  attendanceRadios.forEach((radio) => {
-    radio.addEventListener('change', () => {
-      const isYes = document.querySelector('input[name="attendance"]:checked').value === 'si';
-      if (groupGuestCount) groupGuestCount.style.display = isYes ? 'flex' : 'none';
-      if (groupKidsInfo) groupKidsInfo.style.display = isYes ? 'flex' : 'none';
-      if (groupDietaryMenu) groupDietaryMenu.style.display = isYes ? 'flex' : 'none';
-    });
-  });
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
 
     const name = document.getElementById('guest-name').value.trim();
-    const attendance = document.querySelector('input[name="attendance"]:checked').value;
     const adults = document.getElementById('guest-count') ? document.getElementById('guest-count').value : '1';
     const kids = document.getElementById('kids-info') ? document.getElementById('kids-info').value.trim() : '';
     const dietary = document.getElementById('dietary-menu') ? document.getElementById('dietary-menu').value.trim() : '';
@@ -987,10 +968,10 @@ function initRsvpForm() {
       id: 'guest-' + Date.now(),
       date: formattedDate,
       name: name,
-      attendance: attendance,
-      adults: attendance === 'si' ? adults : '0',
-      kids: attendance === 'si' ? (kids || 'Ninguno') : '-',
-      dietary: attendance === 'si' ? (dietary || 'Ninguna') : '-',
+      attendance: 'si',
+      adults: adults,
+      kids: kids || 'Ninguno',
+      dietary: dietary || 'Ninguna',
       song: song,
       message: message
     };
@@ -1054,29 +1035,24 @@ function initRsvpForm() {
     }
     syncToCloud(newGuestEntry);
 
-    // 2. Formatear y Enviar a WhatsApp
-    let text = `💍 *CONFIRMACIÓN DE ASISTENCIA - BODA SOFIA Y ALEXANDER* 💍\n\n`;
-    text += `👥 *Asistentes:* ${name}\n`;
-    text += `💌 *Asistencia:* ${attendance === 'si' ? '¡Sí, confirmamos con alegría! 🎉' : 'Lamentablemente no podremos asistir 😢'}\n`;
-
-    if (attendance === 'si') {
-      text += `👤 *Adultos:* ${adults}\n`;
-      if (kids) {
-        text += `👶 *Niños y Edades:* ${kids}\n`;
-      }
-      if (dietary) {
-        text += `🥗 *Alergia o Dieta Especial:* ${dietary}\n`;
-      }
-      if (song) {
-        text += `🎶 *Tema para la fiesta:* ${song}\n`;
-      }
+    // 2. Formatear y Enviar a WhatsApp con diseño claro y amigable
+    let text = `💍 *CONFIRMACIÓN DE ASISTENCIA — BODA SOFIA & ALEXANDER* 💍\n\n`;
+    text += `¡Hola! Les confirmamos nuestra asistencia a su casamiento:\n\n`;
+    text += `👥 *Invitados que asisten:*\n${name}\n\n`;
+    text += `👤 *Cantidad de adultos:* ${adults}\n`;
+    if (kids && kids.toLowerCase() !== 'ninguno' && kids.toLowerCase() !== 'no') {
+      text += `👶 *Niños (cantidad y edades):* ${kids}\n`;
     }
-
+    if (dietary && dietary.toLowerCase() !== 'ninguna' && dietary.toLowerCase() !== 'no') {
+      text += `🥗 *Alergias / Menú especial:* ${dietary}\n`;
+    }
+    if (song) {
+      text += `🎶 *Tema para la fiesta:* ${song}\n`;
+    }
     if (message) {
       text += `💬 *Mensaje para los novios:* "${message}"\n`;
     }
-
-    text += `\n📅 *Fecha:* 27/11/2027\n📍 *Lugar:* Establecimiento La Angélica`;
+    text += `\n📅 *Fecha:* Sábado 27 de Noviembre de 2027\n📍 *Lugar:* Establecimiento La Angélica\n\n¡Los esperamos con ansias para celebrar juntos! 🥂✨`;
 
     const encodedText = encodeURIComponent(text);
     const whatsappUrl = `https://api.whatsapp.com/send?phone=5493454048992&text=${encodedText}`;
@@ -1084,7 +1060,7 @@ function initRsvpForm() {
     window.open(whatsappUrl, '_blank');
     showToast('¡Confirmación registrada y enviada a WhatsApp! 💌');
 
-    // Limpiar formulario excepto radio default
+    // Limpiar formulario
     document.getElementById('guest-name').value = '';
     if (document.getElementById('kids-info')) document.getElementById('kids-info').value = '';
     if (document.getElementById('dietary-menu')) document.getElementById('dietary-menu').value = '';
