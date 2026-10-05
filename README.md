@@ -54,7 +54,7 @@ Tarjeta de Invitacion Boda/
         ├── hero.jpg      # Foto principal de portada (Anillo, flores amarillas y sonrisas)
         ├── couple-1.jpg  # Foto 1 (La propuesta frente al lago)
         ├── couple-2.jpg  # Foto 2 (Compromiso en el puente de madera)
-        ├── couple-3.jpg  # Foto 3 (Ramo de flores amarillas y anillo)
+        ├── couple-3.png  # Foto 3 (Ramo de flores amarillas y anillo)
         ├── couple-4.jpg  # Foto 4 (Recostados junto al lago mirando al cielo)
         └── couple-5.jpg  # Foto 5 (Manos entrelazadas y anillo sobre el pecho)
 ```

@@ -367,7 +367,7 @@ function updateMusicUI(playing) {
 const defaultPhotos = [
   { src: 'assets/images/couple-1.jpg', caption: 'La propuesta — Un momento para siempre' },
   { src: 'assets/images/couple-2.jpg', caption: '¡Dijo que sí! — Sofia & Alexander' },
-  { src: 'assets/images/couple-3.jpg', caption: 'Flores y la promesa de una vida juntos' },
+  { src: 'assets/images/couple-3.png', caption: 'Flores y la promesa de una vida juntos' },
   { src: 'assets/images/couple-4.jpg', caption: 'Junto al lago, soñando nuestro futuro' },
   { src: 'assets/images/couple-5.jpg', caption: 'Nuestra promesa de amor eterno' }
 ];
