@@ -596,15 +596,18 @@ body::before {
 
 .couple-hero-image {
   width: 100%;
-  height: 380px;
+  aspect-ratio: 4 / 5;
+  max-height: 520px;
   object-fit: cover;
+  object-position: center 30%;
   border-radius: 8px;
   display: block;
 }
 
 @media (max-width: 480px) {
   .couple-hero-image {
-    height: 300px;
+    aspect-ratio: 4 / 5;
+    max-height: 440px;
   }
 }
 
